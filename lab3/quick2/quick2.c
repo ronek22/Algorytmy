@@ -4,7 +4,7 @@
 #include <math.h>
 #include <time.h>
 
-#define C 3000
+#define C 10
 #define MLD 1000000000.0 //10**9
 
 
