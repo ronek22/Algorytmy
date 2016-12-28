@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define M 120 // wielkosc tab
+#define M 3800 // wielkosc tab
 #define A 0.8 // poziom wypelnienia tab
 #define MAXD 44 // maks. dlugosc nazwiska
 
@@ -21,6 +21,7 @@ typedef struct dane {
 
 dane T[M]; // tablica z hashowaniem
 int iloscProb = 0;
+int iloscSzuk = 0;
 
 void zerowanie(){
         int i;
@@ -45,7 +46,6 @@ int HaszhInsert(dane T[], dane x){
         int j;
         int i = 0; // numer proby
         do {
-                iloscProb++;
                 j = hash(x.name, i);
                 if(strcmp(T[j].name,"")==0) {
                         T[j] = x;
@@ -60,20 +60,25 @@ int HaszhInsert(dane T[], dane x){
 
 int HaszhSearch(dane T[], char k[]){
   // szuka klucza k w tablicy z hashowaniem
+  iloscSzuk++;
   int i = 0;
   int j;
   do{
+    iloscProb++;
     j = hash(k,i);
-    if(strcmp(T[j].name,k)==0) return j; // znaleziony klucz
+    if(strcmp(T[j].name,k)==0){
+      printf("Klucz '%s' znaleziony przy probie nr %d.\n",k,i+1);
+      return j; // znaleziony klucz
+    }
     i++;
   }while(strcmp(T[j].name,"")!=0 && i<M);
-
+  printf("Klucz '%s' nieznaleziony! Podjeto %d prob\n",k, i+1);
   return -1;
 }
 
 int main(){
   int n; // ilosc napisow
-  int p,i; // pomocnicza
+  int p; // pomocnicza
   dane x;
   zerowanie();
 
@@ -89,19 +94,27 @@ int main(){
     fscanf(plik,"%d",&x.ilosc);
     fscanf(plik,"%s",x.name);
     p = HaszhInsert(T,x);
-    printf("Insert %d %s: %d\n", x.ilosc,x.name,p);
+    //printf("Insert %d %s: %d\n", x.ilosc,x.name,p);
     n++;
   }
-
+  
   fclose(plik);
 
-  printf("Tablica:::WYDRUK\n");
-  for(i = 0; i<M; i++)
-    printf("%d: %d %s\n",i,T[i].ilosc,T[i].name);
+  // printf("Tablica:::WYDRUK\n");
+  // for(i = 0; i<M; i++)
+  //   printf("%d: %d %s\n",i,T[i].ilosc,T[i].name);
+
+  HaszhSearch(T, "Adamczyk");
+  HaszhSearch(T, "Nowak");
+  HaszhSearch(T, "Kowalski");
+  // HaszhSearch(T, "Majta");
+  // HaszhSearch(T, "Redzia");
+
 
   printf("Ilosc napisow: %d, rozmiar tablicy: %d\n",n,M);
-  printf("\n wspolczynnik wypelnienia %3.2f srednia ilosc prob  %3.2f",
-  A,((float)iloscProb/n));
+  printf("Ilosc szukan:%d, ilosc prob: %d\n", iloscSzuk, iloscProb);
+  printf("\n wspolczynnik wypelnienia %3.2f wsp(ilosc prob/ilosc szukan): %3.2f",
+  A,((float)iloscProb/iloscSzuk));
 
   return 0;
 }
