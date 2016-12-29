@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define M 3800 // wielkosc tab
+#define M 10000 // wielkosc tab
 #define A 0.8 // poziom wypelnienia tab
 #define MAXD 44 // maks. dlugosc nazwiska
 
@@ -47,6 +47,10 @@ int HaszhInsert(dane T[], dane x){
         int i = 0; // numer proby
         do {
                 j = hash(x.name, i);
+                if(j<0){
+                  printf("Blad hashowania\nUjemna warosc dla wyrazu ''%s'\n\n", x.name);
+                  return -1;
+                }
                 if(strcmp(T[j].name,"")==0) {
                         T[j] = x;
                         return j;
@@ -77,7 +81,7 @@ int HaszhSearch(dane T[], char k[]){
 }
 
 int main(){
-  int n; // ilosc napisow
+  int n=0; // ilosc napisow
   int p; // pomocnicza
   dane x;
   zerowanie();
@@ -94,10 +98,11 @@ int main(){
     fscanf(plik,"%d",&x.ilosc);
     fscanf(plik,"%s",x.name);
     p = HaszhInsert(T,x);
-    //printf("Insert %d %s: %d\n", x.ilosc,x.name,p);
+    //printf("Insert nr %d | %d %s: %d\n",n, x.ilosc,x.name,p);
     n++;
+
   }
-  
+
   fclose(plik);
 
   // printf("Tablica:::WYDRUK\n");
@@ -107,13 +112,11 @@ int main(){
   HaszhSearch(T, "Adamczyk");
   HaszhSearch(T, "Nowak");
   HaszhSearch(T, "Kowalski");
-  // HaszhSearch(T, "Majta");
-  // HaszhSearch(T, "Redzia");
+  HaszhSearch(T, "Bobek");
+  HaszhSearch(T, "Kubiczek");
 
-
-  printf("Ilosc napisow: %d, rozmiar tablicy: %d\n",n,M);
-  printf("Ilosc szukan:%d, ilosc prob: %d\n", iloscSzuk, iloscProb);
-  printf("\n wspolczynnik wypelnienia %3.2f wsp(ilosc prob/ilosc szukan): %3.2f",
+  printf("\nIlosc szukan:%d, ilosc prob: %d\n", iloscSzuk, iloscProb);
+  printf("wspolczynnik wypelnienia %3.2f\nwspolczynnik wyszukiwan: %3.2f\n",
   A,((float)iloscProb/iloscSzuk));
 
   return 0;
