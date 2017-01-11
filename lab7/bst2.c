@@ -1,4 +1,5 @@
 // C program to demonstrate delete operation in binary search tree
+// link for repetead keys: http://www.geeksforgeeks.org/how-to-handle-duplicates-in-binary-search-tree/
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -26,6 +27,17 @@ void inorder(struct node *root)
         printf("%d ", root->key);
         inorder(root->right);
     }
+}
+
+struct node* search(struct node *root, int key){
+  // korzen jest pusty lub szukany klucz jest w korzeniu
+  if(root == NULL || root->key == key){
+    return root;
+  }
+  // Klucz jest wiekszy niz korzen
+  if(root->key < key) return search(root->right, key);
+
+  return search(root->left, key);
 }
 
 /* A utility function to insert a new node with given key in BST */
@@ -116,6 +128,7 @@ int main()
          /  \    /  \
        20   40  60   80 */
     struct node *root = NULL;
+    struct node *tmp = NULL; // for searching
     root = insert(root, 50);
     root = insert(root, 30);
     root = insert(root, 20);
@@ -136,6 +149,13 @@ int main()
     root = deleteNode(root, 30);
     printf("Inorder traversal of the modified tree \n");
     inorder(root);
+
+    printf("\nSearch 40\n");
+    tmp = search(root, 40);
+    if(tmp)
+      printf("Znaleziono klucz\n");
+    else
+      printf("Nie znaleziono klucza\n");
 
     printf("\nDelete 50\n");
     root = deleteNode(root, 50);
